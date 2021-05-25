@@ -1,0 +1,2804 @@
+# ML wo Partitioning & wo Pre-processing
+from IPython.core.display import Image, display
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import numpy as np
+np.set_printoptions(precision=3)
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_selection import RFE
+
+
+
+
+
+display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_setosa.jpg'))
+
+display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_versicolor.jpg'))
+
+display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_virginica.jpg'))
+
+
+from sklearn.datasets import load_iris
+# this is built in dataset
+
+iris = load_iris()
+print(iris)
+# it is a dict of keys & vals
+
+iris.keys()
+# this gvs us keys
+
+iris['data']
+
+iris['target']
+
+iris.values()
+
+iris.data.shape
+# this gvs us the dims
+# our ip data has 150 obs & 4 vars
+
+iris.feature_names
+# these r the vars or features or ivs
+
+
+### Logistic Regression ###
+
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+
+model.fit(iris.data,iris.target) # train
+
+predicted = model.predict(iris.data) # predict
+
+from sklearn.metrics import accuracy_score
+score = accuracy_score(iris.target, predicted)
+print(score)
+
+from sklearn import metrics
+expectedoutcome = iris.target # test
+# true vals vs predicted vals
+print(metrics.confusion_matrix(expectedoutcome,predicted)) #
+
+
+
+
+
+
+
+
+
+### Naives Bayes ###
+
+from sklearn.naive_bayes import GaussianNB
+model = GaussianNB()
+model.fit(iris.data,iris.target)
+predicted = model.predict(iris.data)
+expected = iris.target
+print(metrics.accuracy_score(expected,predicted))
+
+
+
+
+
+
+
+
+### SVM ###
+
+from sklearn.svm import SVC
+model = SVC()
+model.fit(iris.data,iris.target)
+predicted = model.predict(iris.data)
+expected = iris.target
+print(metrics.accuracy_score(expected,predicted))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Diabetes Data ### # ML & Partitioning & wo Pre-processing
+
+
+#url = "https://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data"
+names = ['preg','plas','pres','skin','test','mass','pedi','age','class']
+
+import pandas as pd
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+
+#df = pd.read_csv(url,names=names)
+df.head()
+
+array = df.values
+array
+
+type(array)
+
+X = array[:,0:8] # ivs for train 
+X
+
+y = array[:,8] # dv
+y
+
+test_size = 0.33
+from sklearn.model_selection import train_test_split
+#pip install -U scikit-learn
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+
+
+
+### KNN ###
+
+from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier()
+model.fit(X,y)
+prediction = model.predict(X)
+outcome = y
+from sklearn import metrics
+print(metrics.accuracy_score(outcome,prediction)) # true vals vs predicted vals
+
+
+
+
+
+model = KNeighborsClassifier(5)
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+from sklearn import metrics
+print(metrics.accuracy_score(outcome,prediction)) # true vals vs predicted vals
+
+
+     
+
+     
+model = KNeighborsClassifier(7)
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+print(metrics.accuracy_score(outcome,prediction)) # true vals vs predicted vals
+     
+
+model = KNeighborsClassifier(9)
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+print(metrics.accuracy_score(outcome,prediction)) # true vals vs predicted vals
+     
+
+### Decision Tree
+
+from sklearn.tree import DecisionTreeClassifier
+model = DecisionTreeClassifier()
+model.fit(X,y)
+prediction = model.predict(X)
+outcome = y
+print(metrics.accuracy_score(outcome,prediction))
+
+
+
+from sklearn.tree import DecisionTreeClassifier
+model = DecisionTreeClassifier()
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+print(metrics.accuracy_score(outcome,prediction))
+
+
+
+from sklearn.svm import SVC
+model = SVC()
+model.fit(X,y)
+expected = y
+predicted = model.predict(X)
+print(metrics.accuracy_score(expected,predicted))
+
+
+from sklearn.svm import SVC
+model = SVC()
+model.fit(X_train,y_train)
+expected = y_test
+predicted = model.predict(X_test)
+print(metrics.accuracy_score(expected,predicted))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ML w Partitioning & Pre-processing
+     
+#Feature selection
+
+from sklearn.feature_selection import SelectKBest, chi2
+
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+
+print(df.shape) 
+
+# v hv 8 features or ivs & 1 DV in other words v r using all the features
+df.head()
+
+test = SelectKBest(score_func=chi2,k=4) 
+# Select top 4 features
+
+fit = test.fit(X,y)
+
+import numpy as np
+np.set_printoptions(precision=3)
+print(fit.scores_) # gvs the features for each of the scores
+print('***************** Higher the score better the features predict ***********************')
+
+print(X.shape)
+
+features = fit.transform(X) # 
+print(features[0:5,:]) # print 5 rows all features which is only 4 cols or 4 features
+# Lets try the features on the model
+
+
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.model_selection import train_test_split
+
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+X_train,X_test,y_train,y_test = train_test_split(X,y) 
+# this is using all features and v hv not done the feature selection here
+logreg.fit(X_train,y_train)
+logreg.score(X_test,y_test) #this gvs the accuracy
+
+
+
+#so lets rerun with feature selection with only selected features
+logreg = LogisticRegression()
+X_train,X_test,y_train,y_test = train_test_split(features,y) # v r using features instead of X
+logreg.fit(X_train,y_train)
+logreg.score(X_test,y_test) # It may worsening here sometimes
+
+
+
+
+
+
+
+np.set_printoptions(precision=3)
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
+import warnings
+warnings.filterwarnings('ignore')
+np.random.seed(8)
+%matplotlib inline
+
+
+
+def generate_accuracy_and_heatmap(model, x, y):
+#     cm = confusion_matrix(y,model.predict(x))
+#     sns.heatmap(cm,annot=True,fmt="d")
+    ac = accuracy_score(y,model.predict(x))
+    #f_score = f1_score(y,model.predict(x))
+    print('Accuracy is: ', ac)
+    #print('F1 score is: ', f_score)
+    print ("\n")
+    print (pd.crosstab(pd.Series(model.predict(x), name='Predicted'),
+                       pd.Series(y['Outcome'],name='Actual')))
+    return 1
+
+
+import os
+os.chdir('F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\')
+df = pd.read_csv('diabetes_feat_selct.csv')
+df.head()
+
+df.info()
+
+df.Outcome.value_counts()
+
+df.head()
+
+df['BloodPressureSquare'] = np.square(df['BloodPressure'])
+df['BloodPressureCube'] = df['BloodPressure']**3
+df['BloodPressureSqrt'] = np.sqrt(df['BloodPressure'])
+
+df.head()
+
+df['GlucoseSquare'] = np.square(df['Glucose'])
+df['GlucoseCube'] = df['Glucose']**3
+df['GlucoseSqrt'] = np.sqrt(df['Glucose'])
+
+df['GlucoseBloodPressure'] = df['BloodPressure'] * df['Glucose']
+df['AgeBMI'] = df['Age'] * df['BMI']
+
+df.head()
+
+categorical_feature_columns = list(set(df.columns) - set(df._get_numeric_data().columns))
+categorical_feature_columns
+
+numerical_feature_columns = list(df._get_numeric_data().columns)
+numerical_feature_columns
+
+target = 'Outcome'
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+k = 15 #number of variables for heatmap
+cols = df[numerical_feature_columns].corr().nlargest(k, target)[target].index
+cm = df[cols].corr()
+plt.figure(figsize=(10,6))
+sns.heatmap(cm, annot=True, cmap = 'viridis')
+
+
+
+
+
+X = df.loc[:, df.columns != target]
+Y = df.loc[:, df.columns == target]
+
+X.shape
+
+Y.shape
+
+x_train, x_test, y_train, y_test = train_test_split(X, Y, 
+                                                    test_size=0.33, 
+                                                    random_state=8)
+
+clf_lr = LogisticRegression()      
+lr_baseline_model = clf_lr.fit(x_train,y_train)
+
+generate_accuracy_and_heatmap(lr_baseline_model, x_test, y_test)
+
+
+
+
+
+
+
+#Univariate feature selection
+select_feature = SelectKBest(chi2, k=5).fit(x_train, y_train)
+
+selected_features_df = pd.DataFrame({'Feature':list(x_train.columns),
+                                     'Scores':select_feature.scores_})
+selected_features_df.sort_values(by='Scores', ascending=False)
+# ntc GCube, BPCube hv high singi scores
+# it is indicating the variation in data
+# it ds not tk multi collinearity introduced by us deliberately
+
+x_train.shape
+
+x_train_chi = select_feature.transform(x_train)
+x_train_chi
+
+x_test_chi = select_feature.transform(x_test)
+
+x_train.head(3)
+x_train_chi[0:3]
+
+lr_chi_model = clf_lr.fit(x_train_chi,y_train)
+generate_accuracy_and_heatmap(lr_chi_model, x_test_chi, y_test)
+
+
+#***
+
+# RFE
+# backward elimiation
+#***
+# recursive feature elimination, feature selection technique
+# gvs the combination of features which gv btr accuracy
+
+from sklearn.feature_selection import RFECV
+
+rfecv = RFECV(estimator=clf_lr, step=1, cv=5, scoring='accuracy')
+
+rfecv = rfecv.fit(x_train, y_train)
+
+print('Optimal number of features :', rfecv.n_features_)
+print('Best features :', x_train.columns[rfecv.support_])
+
+rfecv.grid_scores_
+
+plt.figure()
+plt.xlabel("Number of features selected")
+plt.ylabel("Cross validation score of number of selected features")
+plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+plt.show()
+
+
+x_train.shape 
+
+x_train_rfecv = rfecv.transform(x_train)
+x_train_rfecv.shape 
+
+x_test_rfecv = rfecv.transform(x_test)
+
+lr_rfecv_model = clf_lr.fit(x_train_rfecv, y_train)
+
+generate_accuracy_and_heatmap(lr_rfecv_model, x_test_rfecv, y_test)
+
+
+
+
+
+# 2nd ex of RFE
+#url = "https://archive.ics.uci.edu/ml/machine-learning-databases/pima-indians-diabetes/pima-indians-diabetes.data"
+names = ['preg','plas','pres','skin','test','mass','pedi','age','class']
+
+import pandas as pd
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+
+#df = pd.read_csv(url,names=names)
+df.head()
+
+array = df.values
+array
+
+type(array)
+
+X = array[:,0:8] # ivs for train 
+X
+
+y = array[:,8] # dv
+y
+
+test_size = 0.33
+
+from sklearn.model_selection import train_test_split
+#pip install -U scikit-learn
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+
+
+
+
+
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.model_selection import train_test_split
+logreg = LogisticRegression()
+
+from sklearn.feature_selection import RFE
+
+rfe = RFE(logreg,3) # v will use 3 features only best combination of 3 features
+
+import sklearn
+print('The scikit-learn version is {}.'.format(sklearn.__version__))
+
+fit = rfe.fit(X,y)
+
+print("Number of features: %d " % fit.n_features_) # gvs num of features
+
+print("Selected features: %s " % fit.support_) # gvs bool vals, which features hv been selected by feature selection mod
+
+print("Feature Ranking: %s " % fit.ranking_) # gvs 
+
+print("Features sorted by their rank:")
+print(sorted(zip(map(lambda x: round(x, 4), rfe.ranking_), names)))
+
+	 
+X.shape
+
+features = rfe.transform(X)
+features
+
+logreg = LogisticRegression()
+X_train,X_test,y_train,y_test = train_test_split(X,y) # v r using features instead of X
+logreg.fit(X_train,y_train)
+logreg.score(X_test,y_test) # It may worsening here sometimes
+
+logreg = LogisticRegression()
+X_train,X_test,y_train,y_test = train_test_split(features,y) # v r using features instead of X
+logreg.fit(X_train,y_train)
+logreg.score(X_test,y_test) # It may worsening here sometimes
+     
+     
+     
+     
+%matplotlib inline
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings('ignore')
+pd.options.display.max_columns = None
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedKFold
+from sklearn.feature_selection import RFECV
+
+data = pd.read_csv('titanic-train.csv')
+data.head()
+
+# Clean
+data.drop(['Ticket', 'PassengerId'], axis=1, inplace=True)
+
+print(data['Sex'].head())
+
+gender_mapper = {'male': 0, 'female': 1}
+data['Sex'].replace(gender_mapper, inplace=True)
+data.head()
+
+print(data['Title'].head())
+
+data['Title'] = data['Name'].apply(lambda x: x.split(',')[1].strip().split(' ')[0])
+print(data['Title'].head())
+
+data['Title'] = [0 if x in ['Mr.', 'Miss.', 'Mrs.'] else 1 for x in data['Title']]
+data.head()
+
+data = data.rename(columns={'Title': 'Title_Unusual'})
+data.head()
+
+data.drop('Name', axis=1, inplace=True)
+
+data['Cabin_Known'] = [0 if str(x) == 'nan' else 1 for x in data['Cabin']]
+data.head()
+
+data.drop('Cabin', axis=1, inplace=True)
+
+emb_dummies = pd.get_dummies(data['Embarked'], drop_first=True, prefix='Embarked')
+emb_dummies 
+
+data = pd.concat([data, emb_dummies], axis=1)
+data.drop('Embarked', axis=1, inplace=True)
+data.head(3)
+
+data['Age'] = data['Age'].fillna(int(data['Age'].mean()))
+data.head(3)
+
+
+
+# Rem correlated features
+correlated_features = set()
+correlation_matrix = data.drop('Survived', axis=1).corr()
+
+for i in range(len(correlation_matrix.columns)):
+    for j in range(i):
+        if abs(correlation_matrix.iloc[i, j]) > 0.8:
+            colname = correlation_matrix.columns[i]
+            correlated_features.add(colname)
+
+correlated_features
+
+X = data.drop('Survived', axis=1)
+X[:3]	
+
+target = data['Survived']
+
+rfc = RandomForestClassifier(random_state=101)
+rfecv = RFECV(estimator=rfc, step=1, cv=StratifiedKFold(10), scoring='accuracy')
+rfecv.fit(X, target)
+
+print('Optimal number of features: {}'.format(rfecv.n_features_))
+
+plt.figure(figsize=(16, 9))
+plt.title('Recursive Feature Elimination with Cross-Validation', fontsize=18, fontweight='bold', pad=20)
+plt.xlabel('Number of features selected', fontsize=14, labelpad=20)
+plt.ylabel('% Correct Classification', fontsize=14, labelpad=20)
+plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_, color='#303F9F', linewidth=3)
+plt.show()
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### PCA ### Dim Reduction Techniq
+# unlike SelectKBest it is not just eliminating the features
+# but it is creating new features called as components
+# so it is referred as a dim reduction techniq
+
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+array = df.values
+X = array[:,0:8] # ivs for train 
+y = array[:,8] # dv
+test_size = 0.33
+from sklearn.model_selection import train_test_split
+#pip install -U scikit-learn
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+
+X
+
+from sklearn.decomposition import PCA 
+pca = PCA(n_components=None)
+fit = pca.fit(X)
+
+print('Explained Variance Ratio %s: ', fit.explained_variance_ratio_)
+#[  8.885e-01   6.159e-02   2.579e-02   1.309e-02   7.441e-03   3.026e-03
+#   5.124e-04   6.793e-06]
+# First PC explains 88%
+# First 2 PCs explain 88 + 6 = 94% and so on...
+
+print(fit.components_)
+
+pca = PCA(n_components=3)
+fit = pca.fit(X)
+print('Explained Variance Ratio %s: ', fit.explained_variance_ratio_)
+
+# Explained Variance Ratio %s:  [ 0.889  0.062  0.026]
+'''
+First set of components capture 88.9% of the variance
+and the second set of components 6%
+
+This is the first component
+[ -2.022e-03   9.781e-02   1.609e-02   6.076e-02   9.931e-01   1.401e-02
+    5.372e-04  -3.565e-03]
+and so on...
+'''
+
+
+#*** 
+import pandas as pd
+#1. Data 
+# Eating, exercise habbit and their body shape
+df = pd.DataFrame(columns=['calory', 'breakfast', 'lunch', 'dinner', 'exercise', 'body_shape'])
+df.loc[0] = [1200, 1, 0, 0, 2, 'Skinny']
+df.loc[1] = [2800, 1, 1, 1, 1, 'Normal']
+df.loc[2] = [3500, 2, 2, 1, 0, 'Fat']
+df.loc[3] = [1400, 0, 1, 0, 3, 'Skinny']
+df.loc[4] = [5000, 2, 2, 2, 0, 'Fat']
+df.loc[5] = [1300, 0, 0, 1, 2, 'Skinny']
+df.loc[6] = [3000, 1, 0, 1, 1, 'Normal']
+df.loc[7] = [4000, 2, 2, 2, 0, 'Fat']
+df.loc[8] = [2600, 0, 2, 0, 0, 'Normal']
+df.loc[9] = [3000, 1, 2, 1, 1, 'Fat']
+df.head(10)
+
+#2. Split feature vectors and labels
+# X is feature vectors
+
+X = df[['calory', 'breakfast', 'lunch', 'dinner', 'exercise']]
+X.head(9)
+
+# Y is labels
+
+Y = df[['body_shape']]
+Y.head(10)
+
+#3. rescaling feature vectors to all have the same scale
+from sklearn.preprocessing import StandardScaler
+x_std = StandardScaler().fit_transform(X)
+x_std
+
+
+
+from sklearn import decomposition
+pca = decomposition.PCA(n_components=4)
+sklearn_pca_x = pca.fit_transform(x_std)
+sklearn_pca_x 
+print('Explained Variance Ratio %s: ', pca.explained_variance_ratio_)
+
+
+pca = decomposition.PCA(n_components=1)
+sklearn_pca_x = pca.fit_transform(x_std)
+sklearn_pca_x 
+#print('Explained Variance Ratio %s: ', sklearn_pca_x.explained_variance_ratio_)
+
+
+sklearn_result = pd.DataFrame(sklearn_pca_x, columns=['PC1'])
+sklearn_result
+
+sklearn_result['y-axis'] = 0.0
+sklearn_result['label'] = Y
+sklearn_result
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+sns.lmplot('PC1', 'y-axis', data=sklearn_result, fit_reg=False,  # x-axis, y-axis, data, no line
+           scatter_kws={"s": 50}, # marker size
+           hue="label") # color
+
+
+#*** PCA end
+
+
+
+import numpy as np
+import pandas as pd
+df = pd.DataFrame({
+'feature_a':[2,1.5,2,2.5,3,2.5,3.7,2.8,1.8,3.3],
+'feature_b':[1,1.2,2,1.5,3,2.4,3.5,2.8,1.5,2.5],
+'target':['a','a','a','a','b','b','b','b','a','b']})
+print(df)
+
+
+fig = plt.figure(figsize = (8,4))
+ax = fig.add_subplot()
+ax.set_xlabel('F_A')
+ax.set_ylabel('F_B')
+targets = ['a', 'b']
+colors = ['r', 'b']
+for target, color in zip(targets,colors):
+    rows = df['target'] == target
+    ax.scatter(df.loc[rows, 'feature_a'],df.loc[rows, 'feature_b']) #,ax.legend(targets))
+
+
+
+
+
+from sklearn.preprocessing import StandardScaler
+df_features = df[['feature_a','feature_b']]
+df_features = StandardScaler().fit_transform(df_features)
+print(df_features)
+
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+PCs = pca.fit_transform(df_features)
+print(PCs)
+
+
+#Data visualization libraries
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline
+#Create DataFrame
+df_new = pd.DataFrame(data=PCs, columns={'PC1','PC2'})
+df_new['target'] = df['target'] #targets do not change
+print(df_new)
+
+
+# a scatter plot to see the new data points:
+fig = plt.figure(figsize = (8,4))
+ax = fig.add_subplot()
+ax.set_xlabel('PC1')
+ax.set_ylabel('PC2')
+targets = ['a', 'b']
+colors = ['r', 'b']
+for target, color in zip(targets,colors):
+    rows = df_new['target'] == target
+    ax.scatter(df_new.loc[rows, 'PC1'],df_new.loc[rows, 'PC2']) #,ax.legend(targets))
+
+
+
+print(pca.explained_variance_ratio_)
+#array([0.93606831, 0.06393169])
+
+
+
+
+
+
+# PCA iris
+
+import matplotlib.pyplot as plt
+import seaborn as sns; sns.set(style='white')
+%matplotlib inline
+%config InlineBackend.figure_format = 'retina'
+from sklearn import decomposition
+from sklearn import datasets
+from mpl_toolkits.mplot3d import Axes3D
+
+# Loading the dataset
+iris = datasets.load_iris()
+X = iris.data
+y = iris.target
+
+# Let's create a beautiful 3d-plot
+fig = plt.figure(1, figsize=(6, 5))
+plt.clf()
+ax = Axes3D(fig, rect=[0, 0, .95, 1], elev=48, azim=134)
+
+plt.cla()
+
+for name, label in [('Setosa', 0), ('Versicolour', 1), ('Virginica', 2)]:
+    ax.text3D(X[y == label, 0].mean(),
+              X[y == label, 1].mean() + 1.5,
+              X[y == label, 2].mean(), name,
+              horizontalalignment='center',
+              bbox=dict(alpha=.5, edgecolor='w', facecolor='w'))
+# Change the order of labels, so that they match
+y_clr = np.choose(y, [1, 2, 0]).astype(np.float)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=y_clr, 
+           cmap=plt.cm.nipy_spectral)
+
+ax.w_xaxis.set_ticklabels([])
+ax.w_yaxis.set_ticklabels([])
+ax.w_zaxis.set_ticklabels([]);
+
+
+
+# PCA will improve the results of a simple model that is not able to correctly 
+# fit all of the training data:
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, roc_auc_score
+
+# Train, test splits
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.3, 
+                                                    stratify=y, 
+                                                    random_state=42)
+
+# Decision trees with depth = 2
+clf = DecisionTreeClassifier(max_depth=2, random_state=42)
+clf.fit(X_train, y_train)
+preds = clf.predict_proba(X_test)
+print('Accuracy: {:.5f}'.format(accuracy_score(y_test, 
+                                                preds.argmax(axis=1))))
+# Accuracy: 0.88889
+
+
+
+
+# reduce the dimensionality to 2 dimensions:
+
+# Using PCA from sklearn PCA
+pca = decomposition.PCA(n_components=2)
+X_centered = X - X.mean(axis=0)
+pca.fit(X_centered)
+X_pca = pca.transform(X_centered)
+
+# Plotting the results of PCA
+plt.plot(X_pca[y == 0, 0], X_pca[y == 0, 1], 'bo', label='Setosa')
+plt.plot(X_pca[y == 1, 0], X_pca[y == 1, 1], 'go', label='Versicolour')
+plt.plot(X_pca[y == 2, 0], X_pca[y == 2, 1], 'ro', label='Virginica')
+plt.legend(loc=0);
+
+
+
+
+
+
+
+# Test-train split and apply PCA
+X_train, X_test, y_train, y_test = train_test_split(X_pca, y, test_size=.3, 
+                                                    stratify=y, 
+                                                    random_state=42)
+
+clf = DecisionTreeClassifier(max_depth=2, random_state=42)
+clf.fit(X_train, y_train)
+preds = clf.predict_proba(X_test)
+print('Accuracy: {:.5f}'.format(accuracy_score(y_test, 
+                                                preds.argmax(axis=1))))
+#Accuracy: 0.91111
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Extra Tree Classifier ### fourth technique
+
+from sklearn.ensemble import ExtraTreesClassifier
+names = ['preg','plas','pres','skin','test','mass','pedi','age','class']
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+df.head()
+
+array = df.values
+X = array[:,0:8] # ivs for train 
+y = array[:,8] # dv
+#test_size = 0.33
+#X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+
+
+model = ExtraTreesClassifier()
+model.fit(X,y)
+print(model.feature_importances_)
+# The higher the vals the btr the features are
+# drop the low val features
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Pre processing techniques ###
+seed = np.random.seed(3)
+test_size = 0.33
+X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=seed)
+print(df.head())
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+print(model.score(X_test,y_test)) # Normal model wo fea selction
+ 
+     
+rfe = RFE(model,6) # 6 is hyper par
+training = rfe.fit(X_train,y_train)
+training
+
+applied = training.transform(X_train)
+print(applied)
+
+model2 = LogisticRegression()
+model2.fit(applied,y_train) 
+# this is transformed data
+testdata = training.transform(X_test)
+model2.score(testdata,y_test)
+
+new_pat = np.array([0,150,70,30,0,40,0.5,28]) 
+print(new_pat)
+# new vals of patient for prediction
+
+new_pat_adjusted = new_pat.reshape(1,-1) # in new vers of numpy this is reqd when v hv 1 obs
+print(new_pat_adjusted )
+
+new_pat_adjusted = training.transform(new_pat_adjusted)
+print(new_pat_adjusted) # only 6 are left
+
+model2.predict(new_pat_adjusted)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#****
+
+
+
+# Dummy Vars & Encoders
+from numpy import array
+from numpy import argmax
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+
+
+dataset = ['Pizza','Burger','Bread','Bread','Bread','Burger','Pizza','Burger']
+values = array(dataset)
+print(values)
+
+
+label_encoder = LabelEncoder()
+integer_encoded = label_encoder.fit_transform(values)
+print(integer_encoded)
+
+onehot = OneHotEncoder(sparse=False)
+integer_encoded = integer_encoded.reshape(len(integer_encoded),1)
+onehot_encoded = onehot.fit_transform(integer_encoded)
+print(onehot_encoded)
+
+
+inverted_result = label_encoder.inverse_transform([argmax(onehot_encoded[0,:])])
+print(inverted_result)
+
+onehot_encoded
+
+onehot_encoded[0,:]
+
+argmax(onehot_encoded[0,:])
+
+
+
+import pandas as pd
+print(dataset)
+
+pd.get_dummies(dataset)
+
+
+# implement onehotencoding
+import keras
+from keras.utils import to_categorical 
+#ImportError: No module named 'keras'
+# pip install keras
+
+
+myarray = array(dataset)
+integer_encoded = label_encoder.fit_transform(myarray)
+print(integer_encoded)
+
+kerasencoded = to_categorical(integer_encoded)
+print(kerasencoded)
+
+
+
+
+
+
+
+
+
+# Handle missing vals in keras
+
+import pandas as pd
+dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+print(dataset.head(15))
+
+
+
+# ntc the 5th col is bmi 
+# and is gen not 0 but v hv a lot of 0 vals
+print(dataset[[1,2,3,4,5]].head())
+
+
+print(dataset[[1,2,3,4,5]]==0) 
+
+
+print((dataset[[1,2,3,4,5]]==0).sum()) 
+
+
+# missing vals to nans
+import numpy as np
+dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
+print(dataset.head(15))
+
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+
+values = dataset.values
+
+X = values[:,0:8]
+y = values[:,8]
+
+model = LinearDiscriminantAnalysis()
+
+kfold = KFold(n_splits=3,random_state=7)
+
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) # v shd get this
+#ValueError: Input contains NaN, infinity or a value too large for dtype('float64').
+
+# impute msng vals
+# first technq is drop all rows with nas
+#import numpy as np
+dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
+dataset.dropna(inplace=True)
+#print(dataset.head(15)) #ntc row indx
+
+
+# now lets predict
+values = dataset.values
+X = values[:,0:8]
+y = values[:,8]
+model = LinearDiscriminantAnalysis()
+kfold = KFold(n_splits=3,random_state=7)
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#***
+# nxt tchnq lets use mean for imputing
+dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
+
+dataset.fillna(dataset.mean(),inplace=True)
+
+#print(dataset.head(15))
+values = dataset.values
+X = values[:,0:8]
+y = values[:,8]
+
+model = LinearDiscriminantAnalysis()
+kfold = KFold(n_splits=3,random_state=7)
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) # 76.6%, ntc it has worsened
+
+
+
+
+
+
+# nxt tchnq use imputer instd of mean
+#from sklearn.preprocessing import Imputer
+dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
+#print(dataset.head(15))
+values = dataset.values
+
+
+#from sklearn.preprocessing import Imputer
+#imputer = Imputer()
+from sklearn.impute import SimpleImputer 
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+
+values = imputer.fit_transform(values) #by default imputer uses mean
+
+X = values[:,0:8]
+y = values[:,8]
+model = LinearDiscriminantAnalysis()
+kfold = KFold(n_splits=3,random_state=7)
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) # 76.6%
+# so what shd v do
+# v cld incr the n_splits and try again
+
+
+from sklearn.linear_model import LogisticRegression
+model = LogisticRegression()
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) 
+
+!pip install xgboost
+
+from xgboost import XGBClassifier
+model = XGBClassifier()
+result = cross_val_score(model,X,y,cv=kfold,scoring="accuracy")
+print(result.mean()) 
+	
+
+
+# *** Part 2 ***
+
+# Feature Scaling 
+
+
+### Rescaling ### or Normalization
+# MLs put higher wtage on features which hv higher scale
+#print(array)
+print(X)
+
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler(feature_range=(0,1)) # Scaling data btw 0 & 1
+
+rescaled = scaler.fit_transform(X)
+print(rescaled)
+
+np.set_printoptions(precision=2)
+print(rescaled[0:5,:])
+
+print(X)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Standardization, mean of 0 and sd of 1, gaussian distrib
+# Linear Reg, Log Reg, LDA
+from sklearn.preprocessing import StandardScaler
+scaler2 = StandardScaler()
+
+rescaled2 = scaler2.fit_transform(X)
+print(rescaled2[0:5,:])
+
+# vals with a mean of 0 & sd of 1
+# takes ea feature val
+# calcs the mean of ea fea
+# subtracts the mean
+# then div by sd
+# then v get these values
+# this is the 2nd pre-processing technique
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Normalization, when v hv a lot of 0 vals, missing vals
+# or attrs of varying scale used in NNs, KNNs
+# rescaling ea obs to a len of 1 called unit norm in linear alg
+from sklearn.preprocessing import Normalizer
+scaler3 = Normalizer()
+rescaled3 = scaler3.fit_transform(X)
+print(rescaled3[0:5,:])
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Binarizer, make data binary
+# set a threshold, 
+# anything abv thr is 1 or 0 and viceversa
+from sklearn.preprocessing import Binarizer
+scaler4 = Binarizer(threshold=0.0) # thr is 0
+rescaled4 = scaler4.fit_transform(X)
+print(rescaled4[0:5,:])
+
+
+
+
+
+
+
+
+
+
+
+
+# Feature Scaling Project
+from sklearn.linear_model import Ridge
+from sklearn.metrics import mean_squared_error, r2_score
+#url = "http://mlr.cs.umass.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+#df = pd.read_csv(url,sep=';')
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\Wine-Quality-Dataset.csv")
+df.head()
+
+y = df.quality
+y.head()
+
+X = df.drop('quality',axis=1)
+X.head()
+
+test_size = 0.33
+
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size, random_state=123,  stratify=y) 
+# for reproduceability
+# stratified sampling
+
+clf = Ridge()
+
+clf.fit(X_train,y_train)
+
+prediction = clf.predict(X_test)
+
+print(r2_score(y_test,prediction))
+print(mean_squared_error(y_test,prediction))
+
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+
+X_train_scaled
+
+clf2 = Ridge()
+clf2.fit(X_train_scaled,y_train)
+prediction2 = clf2.predict(X_test_scaled)
+print(r2_score(y_test,prediction2))
+print(mean_squared_error(y_test,prediction2)) # slightly better
+
+
+scaler = Normalizer()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+clf2 = Ridge()
+clf2.fit(X_train_scaled,y_train)
+prediction2 = clf2.predict(X_test_scaled)
+print(r2_score(y_test,prediction2))
+print(mean_squared_error(y_test,prediction2)) # slightly better
+
+
+scaler = MinMaxScaler(feature_range=(0,1)) # Scaling data btw 0 & 1
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.fit_transform(X_test)
+clf2 = Ridge()
+clf2.fit(X_train_scaled,y_train)
+prediction2 = clf2.predict(X_test_scaled)
+print(r2_score(y_test,prediction2))
+print(mean_squared_error(y_test,prediction2)) # slightly better
+
+
+
+
+import os
+from sklearn.tree import DecisionTreeClassifier
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
+
+os.chdir('F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\')
+data = pd.read_csv('diabetes2.csv')
+array = data.values
+X = array[:,0:8] # ivs for train 
+y = array[:,8] # dv
+test_size = 0.30
+X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+print('Partitioning Done!')
+model = DecisionTreeClassifier()
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+print(metrics.accuracy_score(outcome,prediction))
+
+print(metrics.confusion_matrix(y_test,prediction)) #
+
+import seaborn as sns
+%matplotlib inline
+expected = y_test
+predicted = prediction
+conf = metrics.confusion_matrix(expected, predicted)
+print(conf)
+label = ["0","1"]
+sns.heatmap(conf, annot=True, xticklabels=label, yticklabels=label)
+
+
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+import matplotlib.pyplot as plt
+
+fpr, tpr, _ = roc_curve(y_test, prediction)
+
+# Calculate the AUC
+roc_auc = auc(fpr, tpr)
+print('ROC AUC: %0.2f' % roc_auc)
+
+
+# Plot of a ROC curve for a specific class
+plt.figure()
+plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend(loc="lower right")
+plt.show()
+
+
+
+
+
+
+
+
+
+#***
+from sklearn.ensemble import BaggingClassifier, RandomForestClassifier, BaggingRegressor, RandomForestRegressor, GradientBoostingRegressor
+model = RandomForestClassifier()
+model.fit(X_train,y_train)
+prediction = model.predict(X_test)
+outcome = y_test
+print(metrics.accuracy_score(outcome,prediction))
+
+print(metrics.confusion_matrix(y_test,prediction)) #
+expected = y_test
+predicted = prediction
+conf = metrics.confusion_matrix(expected, predicted)
+fpr, tpr, _ = roc_curve(y_test, prediction)
+# Calculate the AUC
+roc_auc = auc(fpr, tpr)
+print('ROC AUC: %0.2f' % roc_auc)
+# Plot of a ROC curve for a specific class
+plt.figure()
+plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend(loc="lower right")
+plt.show()
+
+
+
+
+# *** Part 3 ***
+
+# Ensmbls
+
+from sklearn import model_selection
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+df.head()
+
+array = df.values
+X = array[:,0:8]
+y = array[:,8]
+seed = 7
+
+
+kfold = model_selection.KFold(n_splits=10, random_state=seed)
+
+# A simple DecisionTree for comparison instead of bagging classifier wo cv
+model_DT = DecisionTreeClassifier()
+results2 = model_selection.cross_val_score(model_DT,X,y,cv=kfold)
+print(results2.mean())
+
+
+
+cart = DecisionTreeClassifier()
+num_trees = 100
+model_BC = BaggingClassifier(base_estimator=cart, n_estimators=num_trees,random_state=seed)
+
+#base_estmr is the ML algo v want to use
+#n_estmtrs is how many trees v want to build
+results = model_selection.cross_val_score(model_BC,X,y,cv=kfold)
+print(results.mean())
+#v r taking 100 trees and then taking the mean
+
+
+
+
+
+# RF also another Bagging classifier
+from sklearn.ensemble import RandomForestClassifier
+max_features = 3 #4,5,7
+model3 = RandomForestClassifier(n_estimators=num_trees,max_features=max_features)
+results3 = model_selection.cross_val_score(model3,X,y,cv=kfold)
+print(results3.mean())
+
+
+#*****************************
+# Dont run this will take long time
+#*****************************
+model3 = RandomForestClassifier(n_estimators=num_trees,max_features=max_features)
+model_BC2 = BaggingClassifier(base_estimator=model3, n_estimators=num_trees,random_state=seed)
+results = model_selection.cross_val_score(model_BC2,X,y,cv=kfold)
+print(results.mean())
+#0.773376623377
+
+
+
+
+# wo		
+from sklearn.ensemble import ExtraTreesClassifier
+max_features2 = 7
+model4 = ExtraTreesClassifier(n_estimators=num_trees,max_features=max_features2)
+results4 = model_selection.cross_val_score(model4,X,y)
+print(results4.mean())
+
+
+# cv
+max_features2 = 7
+model4 = ExtraTreesClassifier(n_estimators=num_trees,max_features=max_features2)
+results4 = model_selection.cross_val_score(model4,X,y,cv=kfold)
+print(results4.mean())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Adaboost
+from sklearn.ensemble import AdaBoostClassifier
+num_trees2 = 30
+max_features2 = 7
+model5 = AdaBoostClassifier(n_estimators=num_trees2,random_state=seed)
+results5 = model_selection.cross_val_score(model5,X,y,cv=kfold)
+print(results5.mean())
+
+
+# SGBoosting, one of the best techniqs
+from sklearn.ensemble import GradientBoostingClassifier
+num_trees3 = 100
+model6 = GradientBoostingClassifier(n_estimators=num_trees3,random_state=seed)
+results6 = model_selection.cross_val_score(model6,X,y,cv=kfold)
+print(results6.mean())
+
+
+
+
+# First XGBoost model for Pima Indians dataset
+'''How to Install in the simplest way:
+1.    Download the Appropriate .whl file for your environment from 
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#xgboost
+2.    Open your command prompt and cd into the downloaded folder.
+    I’ve downloaded the .whl file inside xgbinstall folder in the Desktop.
+3.    issue the pip install command to the downloaded .whl file like so:
+pip install xgboost-0.6-cp36-cp36m-win_amd64.whl
+'''
+
+#!pip install xgboost
+
+from numpy import loadtxt
+from xgboost import XGBClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# split data into train and test sets
+seed = 7
+test_size = 0.33
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=seed)
+# fit model no training data
+
+model = XGBClassifier()
+model.fit(X_train, y_train)
+# make predictions for test data
+y_pred = model.predict(X_test)
+predictions = [round(value) for value in y_pred]
+# evaluate predictions
+accuracy = accuracy_score(y_test, predictions)
+print("Accuracy: %.2f%%" % (accuracy * 100.0))
+
+
+results6 = model_selection.cross_val_score(model,X,y,cv=kfold)
+print(results6.mean())
+
+
+
+
+
+
+
+# Final ensemble technique
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import VotingClassifier
+
+estimators = []
+
+model7 = LogisticRegression()
+estimators.append(('logistic',model7))
+
+model8 = DecisionTreeClassifier()
+estimators.append(('cart',model8))
+
+model9 = SVC()
+estimators.append(('svm',model9))
+
+model10 = XGBClassifier()
+estimators.append(('xgb',model10))
+
+ensemble = VotingClassifier(estimators)
+
+results7 = model_selection.cross_val_score(ensemble,X,y,cv=kfold)
+print(results7.mean())
+
+
+
+# *** Part 3b ***
+
+
+# Model selection Cross Validation Score
+# Hw to get the best results
+# Partitioning vs CV
+
+df.head()
+#X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=test_size)
+#X
+
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+kfold = KFold(n_splits=10,random_state=7)
+
+model = LogisticRegression()
+model.fit(X_train,y_train)
+result = model.score(X_test,y_test)
+print(":{}".format(result))
+
+
+
+
+
+model2 = LogisticRegression()
+#kfold = KFold(n_splits=10,random_state=7)
+results = cross_val_score(model2,X,y,cv=kfold)
+print("Accuracy with CV:{}".format(results.mean()))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Model Par Tuning/Hyper par optimization
+# Create Best Model with best pars
+# GridsearchCv RandomSearchCV
+from sklearn import datasets
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import GridSearchCV
+import numpy as np
+
+dataset = datasets.load_diabetes()
+dataset
+
+alphas = np.array([1,0.1,0.01,0.001,0.0001,0])
+
+model = Ridge()
+
+grid = GridSearchCV(estimator=model,param_grid=dict(alpha=alphas))
+
+grid.fit(dataset.data,dataset.target)
+
+print(grid.best_score_)
+print(grid.best_estimator_.alpha)
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Random Search A second method to tune algo ###
+from scipy.stats import uniform as sp_rand
+from sklearn import datasets
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import RandomizedSearchCV
+
+print(sp_rand())
+
+#datasets = datasets.load_diabetes()
+param_grid = {'alpha':sp_rand()}
+param_grid
+
+model = Ridge()
+
+rsearch = RandomizedSearchCV(estimator=model, param_distributions=param_grid, n_iter = 100)
+rsearch.fit(dataset.data, dataset.target)
+
+print(rsearch.best_score_)
+print(rsearch.best_estimator_.alpha)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Automate ML using Pipelines ###
+
+df.head()
+
+from sklearn.pipeline import Pipeline
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.preprocessing import StandardScaler
+
+X
+
+estimators = []
+estimators.append(('standardize',StandardScaler()))
+estimators.append(('lda',LinearDiscriminantAnalysis()))
+
+model = Pipeline(estimators)
+seed = 7
+kfold = KFold(n_splits=10, random_state=seed)
+
+results = cross_val_score(model, X,y, cv=kfold)
+print(results.mean())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from sklearn.pipeline import FeatureUnion
+from sklearn.decomposition import PCA
+from sklearn.feature_selection import SelectKBest
+
+features = []
+features.append(('pca',PCA(n_components=3)))
+features.append(('select_kbest',SelectKBest(k=6)))
+feature_union = FeatureUnion(features)
+
+estimators = []
+estimators.append(('feature_union',feature_union))
+estimators.append(('logistic',LogisticRegression()))
+
+model = Pipeline(estimators)
+seed = 7
+
+
+kfold = KFold(n_splits=10,random_state=seed)
+results = cross_val_score(model,X,y,cv=kfold)
+print(results.mean())
+
+
+
+
+
+### How to compare ML algos ###
+import matplotlib.pyplot as plt
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import model_selection
+from sklearn.model_selection import cross_val_score
+from xgboost import XGBClassifier
+from matplotlib import pyplot as plt
+import seaborn as sns
+%matplotlib inline
+import warnings
+warnings.filterwarnings('ignore')
+
+models = []
+models.append(('Log Reg',LogisticRegression()))
+models.append(('LDA',LinearDiscriminantAnalysis()))
+models.append(('KNN',KNeighborsClassifier()))
+models.append(('CART',DecisionTreeClassifier()))
+models.append(('NB',GaussianNB()))
+models.append(('SVM',SVC()))
+models.append(('XGB',XGBClassifier()))
+
+results = []
+names = []
+scoring = 'accuracy'
+
+for name,model in models:
+    kfold = model_selection.KFold(n_splits=10,random_state=seed)
+    cv_results = model_selection.cross_val_score(model,X,y,cv=kfold,scoring=scoring)
+    results.append(cv_results)
+    names.append(name)
+    msg = "%s: %f (%f)" % (name, cv_results.mean(), cv_results.std())
+    print(msg)
+
+fig = plt.figure(figsize=(8, 8))    
+fig.suptitle('Algo Comparison ')
+ax = fig.add_subplot(111)
+plt.boxplot(results)
+ax.set_xticklabels(names)
+plt.show()
+
+
+
+import pickle
+# Fit the model 
+model = LogisticRegression()
+model.fit(X_train, y_train)
+# save the model to disk
+filename = 'finalized_model.sav'
+pickle.dump(model, open(filename, 'wb'))
+ 
+# some time later...
+ 
+# load the model from disk
+loaded_model = pickle.load(open(filename, 'rb'))
+result = loaded_model.score(X_test, y_test)
+print(result)
+
+
+
+
+
+# *** Part 4 ***
+
+
+
+
+
+import pandas as pd   
+import numpy as np    
+import matplotlib.pyplot as plt 
+%matplotlib inline
+%config InlineBackend.figure_formats = ['retina']
+import seaborn as sns
+import time
+import warnings
+warnings.filterwarnings("ignore")
+from sklearn.model_selection import KFold, cross_val_score, GridSearchCV, StratifiedKFold
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB, BernoulliNB, MultinomialNB
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import LinearSVC, SVC
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, log_loss
+from sklearn.metrics import auc, roc_curve, roc_auc_score, precision_recall_curve
+from sklearn.metrics import fbeta_score, cohen_kappa_score
+SEED = 42
+
+
+
+
+
+names = ['preg','plas','pres','skin','test','mass','pedi','age','Outcome']
+
+import pandas as pd
+url = "F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\diabetes2.csv"
+df = pd.read_csv(url)
+#df = pd.read_csv(url,names=names)
+df.head()
+
+# data overview
+print ('Rows     : ', df.shape[0])
+print ('Columns  : ', df.shape[1])
+print ('\nFeatures : \n', df.columns.tolist())
+print ('\nMissing values :  ', df.isnull().sum().values.sum())
+print ('\nUnique values :  \n', df.nunique())
+
+
+print(df.info())
+
+df.isnull().sum()
+
+print(df.Outcome.value_counts())
+# Err fix this
+df['Outcome'].value_counts().plot('bar').set_title('Diabetes Outcome')
+
+
+# proportion of diabetes patients (about 35% having diabetes)
+df.Outcome.value_counts()[1] / df.Outcome.count()
+
+
+# see all numerical columns
+df.describe()
+
+
+
+# Corr Map
+# Correlation Matrix Heatmap Visualization (should run this code again after removing outliers/zero values)
+sns.set(style="white")
+# Generate a mask for the upper triangle
+mask = np.zeros_like(df.corr(), dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+# Set up the matplotlib figure to control size of heatmap
+fig, ax = plt.subplots(figsize=(8,8))
+# Create a custom color palette
+cmap = sns.diverging_palette(255, 10, as_cmap=True)  # as_cmap returns a matplotlib colormap object rather than a list of colors
+# Red=10, Green=128, Blue=255
+# Plot the heatmap
+sns.heatmap(df.corr(), mask=mask, annot=True, square=True, cmap=cmap , vmin=-1, vmax=1, ax=ax)  # annot display corr label
+# Prevent Heatmap Cut-Off Issue
+bottom, top = ax.get_ylim()
+ax.set_ylim(bottom+0.5, top-0.5)
+
+
+
+
+
+
+
+# Analyse feature-outcome distribution in visualisation
+features = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+ROWS, COLS = 2, 4
+fig, ax = plt.subplots(ROWS, COLS, figsize=(18,8) )
+row, col = 0, 0
+for i, feature in enumerate(features):
+    if col == COLS - 1:
+        row += 1
+    col = i % COLS
+    
+#     df[feature].hist(bins=35, color='green', alpha=0.5, ax=ax[row, col]).set_title(feature)  #show all, comment off below 2 lines
+    df[df.Outcome==0][feature].hist(bins=35, color='blue', alpha=0.5, ax=ax[row, col]).set_title(feature)
+    df[df.Outcome==1][feature].hist(bins=35, color='orange', alpha=0.7, ax=ax[row, col])
+    
+plt.legend(['No Diabetes', 'Diabetes'])
+fig.subplots_adjust(hspace=0.3)
+
+
+
+
+
+
+
+
+# there are zero values in Glucose, BloodPressure, SkinThickness, Insulin, BMI
+# replace zero by median, 2 steps: replace 0 by NaN, then replace NaN by median (so that 0 will not affect median)
+df.Glucose.replace(0, np.nan, inplace=True)
+
+df.Glucose.replace(np.nan, df['Glucose'].median(), inplace=True)
+
+df.BloodPressure.replace(0, np.nan, inplace=True)
+df.BloodPressure.replace(np.nan, df['BloodPressure'].median(), inplace=True)
+df.SkinThickness.replace(0, np.nan, inplace=True)
+df.SkinThickness.replace(np.nan, df['SkinThickness'].median(), inplace=True)
+df.Insulin.replace(0, np.nan, inplace=True)
+df.Insulin.replace(np.nan, df['Insulin'].median(), inplace=True)
+df.BMI.replace(0, np.nan, inplace=True)
+df.BMI.replace(np.nan, df['BMI'].median(), inplace=True)
+
+# Analyse feature-outcome distribution in visualisation
+features = ['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction', 'Age']
+
+ROWS, COLS = 2, 4
+fig, ax = plt.subplots(ROWS, COLS, figsize=(18,8) )
+row, col = 0, 0
+for i, feature in enumerate(features):
+    if col == COLS - 1:
+        row += 1
+    col = i % COLS
+    
+#     df[feature].hist(bins=35, color='green', alpha=0.5, ax=ax[row, col]).set_title(feature)  #show all, comment off below 2 lines
+    df[df.Outcome==0][feature].hist(bins=35, color='blue', alpha=0.5, ax=ax[row, col]).set_title(feature)
+    df[df.Outcome==1][feature].hist(bins=35, color='orange', alpha=0.7, ax=ax[row, col])
+    
+plt.legend(['No Diabetes', 'Diabetes'])
+fig.subplots_adjust(hspace=0.3)
+
+
+
+
+
+# explore: there is 1 outlier in SkinThickness (value: 99.0)
+# df['SkinThickness'].max()
+# sorted(df['SkinThickness'])[::-1]  # descending
+
+
+
+
+X, y = df.drop('Outcome', axis=1), df['Outcome']
+print(X.shape, y.shape)
+## top features using Random Forest
+rfc = RandomForestClassifier(random_state=SEED, n_estimators=100)
+# Train model, note that NO scaling is required
+rfc_model = rfc.fit(X, y)
+# Plot the top features based on its importance
+(pd.Series(rfc_model.feature_importances_, index=X.columns)
+    .nlargest(10)   # can adjust based on how many top features you want
+    .plot(kind='barh', figsize=[8,4], color = list('rgbkymc'))
+    .invert_yaxis()) # Ensures that the feature with the most importance is on top, in descending order
+plt.yticks(size=15)
+plt.title('Top Features derived by Random Forest', size=20)
+
+
+
+
+# for linear data and model, p-value < 0.05 indicates a significant feature
+import statsmodels.api as sm
+X = sm.add_constant(X)  # need to add this to define the Intercept
+# model / fit / summarize results
+model = sm.OLS(y, X)
+result = model.fit()
+result.summary()
+
+
+
+
+
+X = df.drop('Outcome', axis=1)   # axis=0 for row, axis=1 for column
+y = df['Outcome']
+
+# split data to 80:20 ratio for train/test
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=SEED, stratify=y)
+print('X_train', X_train.shape)
+print('y_train', y_train.shape)
+print('X_test', X_test.shape)
+print('y_test', y_test.shape)
+
+
+
+
+# Cross Validation
+# Use StratifiedKFold, especially if target class is imbalance
+## Baseline model performance evaluation
+# kf = KFold(n_splits=5, shuffle=True, random_state=SEED)   # this may result in imbalance classes in each fold
+kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
+
+# to give model baseline report in dataframe 
+def baseline_report(model, X_train, X_test, y_train, y_test, name):
+    model.fit(X_train, y_train)
+    accuracy     = np.mean(cross_val_score(model, X_train, y_train, cv=kf, scoring='accuracy'))
+    precision    = np.mean(cross_val_score(model, X_train, y_train, cv=kf, scoring='precision'))
+    recall       = np.mean(cross_val_score(model, X_train, y_train, cv=kf, scoring='recall'))
+    f1score      = np.mean(cross_val_score(model, X_train, y_train, cv=kf, scoring='f1'))
+    rocauc       = np.mean(cross_val_score(model, X_train, y_train, cv=kf, scoring='roc_auc'))
+    y_pred = model.predict(X_test)
+    logloss      = log_loss(y_test, y_pred)   # SVC & LinearSVC unable to use cvs
+
+    df_model = pd.DataFrame({'model'        : [name],
+                             'accuracy'     : [accuracy],
+                             'precision'    : [precision],
+                             'recall'       : [recall],
+                             'f1score'      : [f1score],
+                             'rocauc'       : [rocauc],
+                             'logloss'      : [logloss],
+                             'timetaken'    : [0]       })   # timetaken: to be used for comparison later
+    return df_model
+
+# to evaluate baseline models
+gnb = GaussianNB()
+bnb = BernoulliNB()
+mnb = MultinomialNB()
+logit = LogisticRegression()
+knn = KNeighborsClassifier()
+decisiontree = DecisionTreeClassifier()
+randomforest = RandomForestClassifier()
+svc = SVC()
+linearsvc = LinearSVC()
+
+# to concat all models
+df_models = pd.concat([baseline_report(gnb, X_train, X_test, y_train, y_test, 'GaussianNB'),
+                       baseline_report(bnb, X_train, X_test, y_train, y_test, 'BernoulliNB'),
+                       baseline_report(mnb, X_train, X_test, y_train, y_test, 'MultinomialNB'),
+                       baseline_report(logit, X_train, X_test, y_train, y_test, 'LogisticRegression'),
+                       baseline_report(knn, X_train, X_test, y_train, y_test, 'KNN'),
+                       baseline_report(decisiontree, X_train, X_test, y_train, y_test, 'DecisionTree'),
+                       baseline_report(randomforest, X_train, X_test, y_train, y_test, 'RandomForest'),
+                       baseline_report(svc, X_train, X_test, y_train, y_test, 'SVC'),
+                       baseline_report(linearsvc, X_train, X_test, y_train, y_test, 'LinearSVC')
+                       ], axis=0).reset_index()
+df_models = df_models.drop('index', axis=1)
+df_models
+'''
+The performance metrics used in the evaluation are:
+Accuracy Score: proportion of correct predictions out of the whole dataset. 
+Precision Score: proportion of correct predictions out of all 
+	predicted diabetic cases.
+Recall Score: proportion of correct predictions out of all actual 
+	diabetic cases.
+F1 Score: optimised balance between Precision and Recall for binary targets.
+
+Area Under ROC Curve: prediction scores from area under Receiver Operating Characteristic 
+	(ROC) curve, which is a relationship between True Positive Rate 
+	and False Positive Rate.
+Log Loss: aka logistic loss or cross-entropy loss, defined as the 
+	negative log-likelihood of the true labels given a probabilistic 
+	classifier’s predictions, and has to be as low as possible.
+
+Based on F1-Score performance, 3 models seem to be leading: 
+	GaussianNB, LogisticRegression, and RandomForest.'''
+
+
+
+
+
+
+
+
+
+# Optimise model: hyperparameter tuning
+def model_report(model, X_train, X_test, y_train, y_test, model_name):
+    print('\nSearch for OPTIMAL THRESHOLD, vary from 0.0001 to 0.9999, fit/predict on train/test data')
+    model.fit(X_train, y_train)
+    optimal_th = 0.5   # start with default threshold value
+    
+    for i in range(0,3):
+        score_list = []
+        print('\nLooping decimal place', i+1) 
+        th_list = [np.linspace(optimal_th-0.4999, optimal_th+0.4999, 11), 
+                  # eg [ 0.0001 , 0.1008, 0.2006, 0.3004, 0.4002, 0.5, 0.5998, 0.6996, 0.7994, 0.8992, 0.9999 ]
+                 np.linspace(optimal_th-0.1, optimal_th+0.1, 21), 
+                  # eg 0.3xx [ 0.2 , 0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3 , 0.31, 0.32, 0.33, 0.34, 0.35, 0.36, 0.37, 0.38, 0.39, 0.4 ]
+                 np.linspace(optimal_th-0.01, optimal_th+0.01, 21)]
+                  # eg 0.30x [ 0.29 , 0.291, 0.292, 0.293, 0.294, 0.295, 0.296, 0.297, 0.298, 0.299, 0.3  , 0.301, 0.302, 0.303, 0.304, 0.305, 0.306, 0.307, 0.308, 0.309, 0.31 ]
+        print(th_list)
+        for th in th_list[i]:
+            if th<0: 
+                score_list.append(-1)
+                continue
+            y_pred = (model.predict_proba(X_test)[:,1] >= th)
+            f1scor = f1_score(y_test, y_pred)
+            score_list.append(f1scor)
+            print('{:.3f}->{:.4f}'.format(th, f1scor), end=',  ')   # display f1score in 4 decimal pl
+
+        optimal_th = float(th_list[i][score_list.index(max(score_list))])
+
+    print('optimal F1 score = {:.4f}'.format(max(score_list)))
+    print('optimal threshold = {:.3f}'.format(optimal_th))
+
+    print(model_name, 'accuracy score is')
+    print('Training: {:.2f}%'.format(100*model.score(X_train, y_train)))  # score uses accuracy
+    accuracy      = model.score(X_test, y_test)
+    print('Test set: {:.2f}%'.format(100*accuracy))
+
+    y_pred = (model.predict_proba(X_test)[:,1] >= 0.25)
+    print('\nAdjust threshold to 0.25:')
+    print('Precision: {:.4f},   Recall: {:.4f},   F1 Score: {:.4f}'.format(
+        precision_score(y_test, y_pred), recall_score(y_test, y_pred), f1_score(y_test, y_pred)))
+    print(model_name, 'confusion matrix: \n', confusion_matrix(y_test, y_pred))
+
+    y_pred = model.predict(X_test)
+    print('\nDefault threshold of 0.50:')
+    print('Precision: {:.4f},   Recall: {:.4f},   F1 Score: {:.4f}'.format(
+        precision_score(y_test, y_pred), recall_score(y_test, y_pred), f1_score(y_test, y_pred)))
+    print(model_name, 'confusion matrix: \n', confusion_matrix(y_test, y_pred))
+
+    y_pred = (model.predict_proba(X_test)[:,1] >= 0.75)
+    print('\nAdjust threshold to 0.75:')
+    print('Precision: {:.4f},   Recall: {:.4f},   F1 Score: {:.4f}'.format(
+        precision_score(y_test, y_pred), recall_score(y_test, y_pred), f1_score(y_test, y_pred)))
+    print(model_name, 'confusion matrix: \n', confusion_matrix(y_test, y_pred))
+
+    y_pred = (model.predict_proba(X_test)[:,1] >= optimal_th)
+#     y_pred = [1 if x==True else 0 if x==False else x for x in y_pred]   # .predict->0/1; .predict_proba->False/True
+    print('\nOptimal threshold {:.3f}'.format(optimal_th))
+    precision    = precision_score(y_test, y_pred)
+    recall       = recall_score(y_test, y_pred)
+    f1score      = f1_score(y_test, y_pred)
+    print('Precision: {:.4f},   Recall: {:.4f},   F1 Score: {:.4f}'.format(precision, recall, f1score))
+    print(model_name, 'confusion matrix: \n', confusion_matrix(y_test, y_pred))
+    
+    y_pred = model.predict_proba(X_test)[:,1]   # use this at optimal th, for AUC and logloss
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+    rocauc       = auc(fpr, tpr)
+    print(model_name, 'AUC: {:.4f}'.format(rocauc))
+    logloss      = log_loss(y_test, y_pred)   # same result using y_pred = model.predict_proba(X_test)
+    print(model_name, 'Log-loss: {:.4f}'.format(logloss))
+
+    df_model = pd.DataFrame({'model'        : [model_name],
+                             'accuracy'     : [accuracy],
+                             'precision'    : [precision],
+                             'recall'       : [recall],
+                             'f1score'      : [f1score],
+                             'rocauc'       : [rocauc],
+                             'logloss'      : [logloss],
+                             'timetaken'    : [1000]       })   # timetaken for comparison later
+    return df_model
+
+print('\n"""""" GaussianNB """"""')
+time1 = time.time()
+gnb = GaussianNB()
+model1 = model_report(gnb, X_train, X_test, y_train, y_test, 'GaussianNB')
+model1.timetaken[0] = time.time() - time1
+
+
+print('\n"""""" BernoulliNB """"""')
+time1 = time.time()
+bnb = BernoulliNB()
+model2 = model_report(bnb, X_train, X_test, y_train, y_test, 'BernoulliNB')
+model2.timetaken[0] = time.time() - time1
+
+
+print('\n"""""" MultinomialNB """"""')
+time1 = time.time()
+mnb = MultinomialNB()
+model3 = model_report(mnb, X_train, X_test, y_train, y_test, 'MultinomialNB')
+model3.timetaken[0] = time.time() - time1
+
+''' After tuning the threshold and other hyperparameters, 
+	F1-Score has improved for all models. The metric “Area Under ROC Curve” 
+	shows that Logistic Regression has fallen behind a little, 
+	leaving 2 leading models to choose from.'''
+
+'''A neck-to-neck race between the 2 leading models, we need a tie breaker. 
+	Below metrics are Log-Loss and Time Taken, 
+	where scores should be as low as possible.'''
+
+'''Random Forest is too time consuming to run, and thus Gaussian Naive Bayes 
+	is the winning model! the performance metric scores after tuning 
+	hyperparameters; shows improvement:'''
+
+'''‘Glucose’ and ‘BMI’ are the most important medical predictor features.
+	For a healthy living, look after your sugar intake and your weight.
+
+Wish You All A Healthy life!'''
+
+reinforce18.ai@gmail.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Optimal threshold 0.207
+# Precision: 0.5952,   Recall: 0.9091,   F1 Score: 0.7194
+# GaussianNB confusion matrix: 
+#  [[65 34]
+#  [ 5 50]]
+# GaussianNB AUC: 0.8325
+# GaussianNB Log-loss: 0.5727
+
+print('\n"""""" LogisticRegression """"""')
+time1 = time.time()
+print('\nSearch for optimal hyperparameter C in LogisticRegresssion, vary C from 0.001 to 1000, using KFold(5) Cross Validation on train data')
+kf = KFold(n_splits=5, random_state=SEED, shuffle=True)  #produce the k folds
+score_list = []
+c_list = 10**np.linspace(-3,3,200)
+for c in c_list:
+    logit = LogisticRegression(C = c)
+    cvs = (cross_val_score(logit, X_train, y_train, cv=kf, scoring='f1')).mean()
+    score_list.append(cvs)
+    print('{:.4f}'.format(cvs), end=", ")   # 4 decimal pl
+print('optimal cv F1 score = {:.4f}'.format(max(score_list)))
+optimal_c = float(c_list[score_list.index(max(score_list))])
+print('optimal value of C = {:.3f}'.format(optimal_c))
+
+logit = LogisticRegression(C = optimal_c)
+model4 = model_report(logit, X_train, X_test, y_train, y_test, 'LogisticRegression')
+model4.timetaken[0] = time.time() - time1
+
+
+
+
+
+
+
+print('\n"""""" KNN """""" ')
+time1 = time.time()
+print('\nSearch for optimal hyperparameter K in KNN, vary K from 1 to 20, using KFold(5) Cross Validation on train data')
+kf = KFold(n_splits=5, random_state=SEED, shuffle=True)  #produce the k folds
+k_scores = []
+for k in range(1, 21):
+    knn = KNeighborsClassifier(n_neighbors = k)
+    cvs = cross_val_score(knn, X_train, y_train, cv=kf, scoring='f1').mean()
+    k_scores.append(cvs)
+    print('{:.4f}'.format(cvs), end=", ")
+print('optimal cv F1 score = {:.4f}'.format(max(k_scores)))   # 4 decimal pl
+optimal_k = k_scores.index(max(k_scores))+1   # index 0 is for k=1
+print('optimal value of K =', optimal_k)
+
+knn = KNeighborsClassifier(n_neighbors = optimal_k)
+model5 = model_report(knn, X_train, X_test, y_train, y_test, 'KNN')
+model5.timetaken[0] = time.time() - time1
+
+print('\nCompare with KNN classification_report (same as default threshold 0.50)')
+knn.fit(X_train, y_train)
+y_pred = knn.predict(X_test)
+print(metrics.classification_report(y_test, y_pred))
+
+
+
+
+
+
+
+
+
+print('\n"""""" DecisionTreeClassifier """"""')
+time1 = time.time()
+print('\nSearch for optimal max_depth in DecisionTree, vary 2 to 10, using KFold(5) Cross Validation on train data')
+kf = KFold(n_splits=5, random_state=SEED, shuffle=True)  #produce the k folds
+d_scores = []
+for d in range(2, 11):
+    decisiontree = DecisionTreeClassifier(max_depth=d)
+    cvs = cross_val_score(decisiontree, X_train, y_train, cv=kf, scoring='f1').mean()
+    d_scores.append(cvs)
+    print('{:.4f}'.format(cvs), end=", ")
+print('optimal F1 score = {:.4f}'.format(max(d_scores)))   # 4 decimal pl
+optimal_d = d_scores.index(max(d_scores))+2   # index 0 is for d=2
+print('optimal max_depth =', optimal_d)
+
+decisiontree = DecisionTreeClassifier(max_depth=optimal_d)
+model6 = model_report(decisiontree, X_train, X_test, y_train, y_test, 'DecisionTree')
+model6.timetaken[0] = time.time() - time1
+# Note: results keep changing in each run
+
+
+
+
+
+
+
+
+
+
+print('\n"""""" RandomForestClassifier """""" (quite slow)')
+time1 = time.time()
+print('\nSearch for optimal n_estimators in RandomForest, vary 100 to 500, using KFold(5) Cross Validation on train data')
+kf = KFold(n_splits=5, random_state=SEED, shuffle=True)  #produce the k folds
+score_list = []
+n_list = []
+for n in [100, 150, 200, 250, 300, 350, 400, 450, 500]:
+    randomforest = RandomForestClassifier(n_estimators=n)
+    cvs = (cross_val_score(randomforest, X_train, y_train, cv=kf, scoring='f1')).mean()
+    score_list.append(cvs)
+    n_list.append(n)
+    print('{:.0f}->{:.4f}'.format(n, cvs), end=", ")   # display score in 4 decimal place
+print('optimal F1 score = {:.4f}'.format(max(score_list)))
+optimal_n = int(n_list[score_list.index(max(score_list))])
+print('optimal n_estimators = {:.0f}'.format(optimal_n))
+
+randomforest = RandomForestClassifier(n_estimators=optimal_n)
+model7 = model_report(randomforest, X_train, X_test, y_train, y_test, 'RandomForest')
+model7.timetaken[0] = time.time() - time1
+# Note: results keep changing in each run
+
+
+
+
+
+
+
+
+
+
+print('\n"""""" SVC """"""')
+time1 = time.time()
+svc = SVC(gamma='scale', probability=True)
+model8 = model_report(svc, X_train, X_test, y_train, y_test, 'SVC')
+model8.timetaken[0] = time.time() - time1
+
+
+
+
+
+
+
+
+
+
+print('\n"""""" LinearSVC """"""')
+time1 = time.time()
+linearsvc = LinearSVC()
+# model9 = model_report(linearsvc, X_train, X_test, y_train, y_test, 'LinearSVC')   # model has no attribute 'predict_proba'
+
+linearsvc.fit(X_train, y_train)
+print('LinearSVC accuracy score is')
+print('Training: {:.2f}%'.format(100*linearsvc.score(X_train, y_train)))  # score uses accuracy
+accuracy      = linearsvc.score(X_test, y_test)
+print('Test set: {:.2f}%'.format(100*accuracy))
+
+y_pred = linearsvc.predict(X_test)
+print(classification_report(y_test, y_pred))
+print('LinearSVC confusion matrix: \n', confusion_matrix(y_test, y_pred))
+
+precision    = precision_score(y_test, y_pred)
+recall       = recall_score(y_test, y_pred)
+f1score      = f1_score(y_test, y_pred) 
+rocauc       = roc_auc_score(y_test, y_pred)
+logloss      = log_loss(y_test, y_pred)
+print('LinearSVC AUC: {:.4f}'.format(rocauc))
+print('LinearSVC Log-loss: {:.4f}'.format(logloss))
+
+model9 = pd.DataFrame({'model'        : ['LinearSVC'],
+                       'accuracy'     : [accuracy],
+                       'precision'    : [precision],
+                       'recall'       : [recall],
+                       'f1score'      : [f1score],
+                       'rocauc'       : [rocauc],
+                       'logloss'      : [logloss],
+                       'timetaken'    : [time.time() - time1]       })
+# Note: results keep changing in each run
+
+
+
+
+
+
+
+
+
+
+# Compiling the results of all tuned models
+# concat all models
+df_models_tuned = pd.concat([model1,model2,model3,model4,model5,model6,model7,model8,model9],axis = 0).reset_index()
+df_models_tuned.drop('index', axis=1, inplace=True)
+df_models_tuned
+
+
+
+
+
+df_models   # compare with baseline results before tuning
+
+
+
+
+# initialise an empty df for comparison: 1 = improved, 0 = no improvement
+df1 = pd.DataFrame({'model': [0]*9,'accuracy': [0]*9,'precision': [0]*9,'recall': [0]*9,'f1score': [0]*9,'rocauc': [0]*9,'logloss': [0]*9,'timetaken': [0]*9})
+df1.model = df_models.model
+for i in range(1,6):
+    for j in range(9):
+        if df_models_tuned[df_models_tuned.columns[i]][j] > df_models[df_models.columns[i]][j]:
+            df1[df1.columns[i]][j] = 1
+for i in range(6,8):
+    for j in range(9):
+        if df_models_tuned[df_models_tuned.columns[i]][j] < df_models[df_models.columns[i]][j]:
+            df1[df1.columns[i]][j] = 1
+df1   # Note: F1-Score has improved for all models after tuning the threshold and other hyperparameters
+
+
+
+
+
+
+
+## plot the performance metric scores
+fig, ax = plt.subplots(4, 1, figsize=(18, 20))
+
+ax[0].bar(df_models_tuned.model, df_models_tuned.f1score)
+ax[0].set_title('F1-score')
+
+ax[1].bar(df_models_tuned.model, df_models_tuned.rocauc)
+ax[1].set_title('AUC-score')
+
+ax[2].bar(df_models_tuned.model, df_models_tuned.logloss)
+ax[2].set_title('Log-Loss-Score')
+
+ax[3].bar(df_models_tuned.model, df_models_tuned.timetaken)
+ax[3].set_title('Time taken')
+
+# Fine-tune figure; make subplots farther from each other, or nearer to each other.
+fig.subplots_adjust(hspace=0.2, wspace=0.2)
+
+
+
+
+
+
+
+
+
+
+# plot the ROC curves
+plt.figure(figsize=(10,10))
+
+model_name = [gnb, bnb, mnb, logit, knn, decisiontree, randomforest, svc, linearsvc]
+
+for i in range(8):
+    y_pred = model_name[i].predict_proba(X_test)[:,1]
+    fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+    plt.plot(fpr, tpr, lw=3, label=df_models_tuned.model[i] + ' (area = %0.3f)' % auc(fpr, tpr))
+
+y_pred = linearsvc.predict(X_test)   # linearsvc has no attribute 'predict_proba'
+fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+plt.plot(fpr, tpr, lw=3, label='LinearSVC (area = %0.3f)' % auc(fpr, tpr))
+
+plt.plot([0, 1], [0, 1], color='navy', lw=1.5, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.0])
+plt.xlabel('False Positive Rate', fontsize=13)
+plt.ylabel('True Positive Rate', fontsize=14)
+plt.title('Receiver Operating Characteristic', fontsize=17)
+plt.legend(loc='lower right', fontsize=13)
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+# see how model confusion matrix varies with threshold
+bestmodel = gnb
+def make_confusion_matrix(model, threshold=0.5):
+    # Predict class 1 if probability of being in class 1 is greater than threshold
+    # (bestmodel.predict(X_test) is done automatically with a threshold of 0.5)
+    y_pred = (bestmodel.predict_proba(X_test)[:, 1] >= threshold)
+    conf = confusion_matrix(y_test, y_pred)
+    plt.figure(figsize = [5,5])
+    sns.heatmap(conf, cmap=plt.cm.Blues, annot=True, square=True, fmt='d',
+           xticklabels=['no diabetes', 'diabetes'],
+           yticklabels=['no diabetes', 'diabetes']);
+    plt.xlabel('prediction')
+    plt.ylabel('actual')
+
+# see how our confusion matrix changes with changes to the cutoff! 
+from ipywidgets import interactive, FloatSlider
+# bestmodel = LogisticRegression(C = optimal_c)
+# bestmodel.fit(X_train, y_train)
+interactive(lambda threshold: make_confusion_matrix(bestmodel, threshold), threshold=(0.0,1.0,0.01))
+
+
+
+
+
+
+
+
+
+#The winning model is:
+
+# GaussianNB AUC: 0.8325
+# Optimal threshold 0.207
+# Precision: 0.5952,   Recall: 0.9091,   F1 Score: 0.7194
+# GaussianNB confusion matrix: 
+#  [[65 34]
+#  [ 5 50]]
+
+# RandomForest AUC: 0.8369
+# Optimal threshold 0.447
+# Precision: 0.6418,   Recall: 0.7818,   F1 Score: 0.7049
+# RandomForest confusion matrix: 
+#  [[75 24]
+#  [12 43]]
+
+
+
+# Difference between roc_auc_score(y_test, y_pred) and auc(fpr, tpr)
+y_pred = gnb.predict(X_test)
+model_roc_auc = roc_auc_score(y_test, y_pred)   # this is AUC score when threshold is default 0.5
+print('gnb', 'roc_auc_score: {:.4f}'.format(model_roc_auc)) 
+
+y_pred = gnb.predict_proba(X_test)[:,1]>0.5    # predict_proba to adjust threshold to 0.5, same results
+fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+model_auc = auc(fpr, tpr)
+print('gnb', 'AUC: {:.4f}'.format(model_auc))
+
+y_pred = gnb.predict_proba(X_test)[:,1]   # use this for optimal threshold after tuning
+fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+model_auc = auc(fpr, tpr)
+print('gnb', 'AUC: {:.4f}'.format(model_auc))
+
+
+
+
+
+
+
+
+
+
+# Use GridSearchCV to tune the model, eg. Logistic Regression
+# For most algorithms, there are parameters to tune to model the data better.
+# One approach is to use grid search to find a suitable parameter that builds
+# an optimal model.
+# pass in parameters of all these values in the grids, see which gives the 
+# best score.
+param_grid = {'C': [0.01, 0.1, 1, 10, 20]}
+grid = GridSearchCV(LogisticRegression(solver='liblinear'), 
+                    param_grid, cv=5, scoring='f1') # cv=5 refers to cross validation in the training dataset
+
+grid.fit(X_train, y_train)
+
+print("Best cross-validation score: {:.3f}".format(grid.best_score_))   # scoring='f1'; or default using accuracy
+print("Best parameters: ", grid.best_params_)
+print("Best estimator: ", grid.best_estimator_)
+
+#make prediction
+lr = grid.best_estimator_
+lr.fit(X_train, y_train)
+y_pred = lr.predict(X_test)
+print('Testing metrics after grid search')
+print('Accuracy', accuracy_score(y_test, y_pred))
+print('Precision', precision_score(y_test, y_pred))
+print('Recall', recall_score(y_test, y_pred))
+
+
+
+
+
+
+
+
+
+# To handle imbalance data
+# This two-class dataset seems imbalanced (65% vs 35%). As a result, there is a possibility that one class is over-represented and the model built might be biased towards to majority. I have tried to solve this by oversampling the smaller class but there was no improvement. F1-score dropped from 0.66 to 0.63
+
+# baseline model performance (before  oversampling)
+print('X_train.shape:', X_train.shape)
+print(pd.value_counts(pd.Series(y_train)))
+gnb.fit(X_train, y_train)
+y_pred = gnb.predict(X_test)
+print('Model accuracy is', accuracy_score(y_test, y_pred))
+print('Model accuracy is', gnb.score(X_test, y_test))   # same result (.score uses accuracy)
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+
+
+
+
+
+
+
+
+
+# Handling imbalance data - Rerunning above with resampled data - using oversampling
+# create fake sample data into the imbalanced side to balance it out.
+from imblearn.over_sampling import SMOTE
+sm = SMOTE(random_state = SEED)
+X_train_sm, y_train_sm = sm.fit_sample(X_train, y_train.ravel())
+
+print('X_train_sm.shape:', X_train_sm.shape)
+print(pd.value_counts(pd.Series(y_train_sm)))
+
+gnb_sm = gnb.fit(X_train_sm, y_train_sm)
+y_pred = gnb_sm.predict(X_test)
+print('Model accuracy is', accuracy_score(y_test, y_pred))
+print('Model accuracy is', gnb.score(X_test, y_test))   # same results (.score uses accuracy)
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+
+
+
+
+
+
+
