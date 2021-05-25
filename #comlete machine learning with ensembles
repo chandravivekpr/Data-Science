@@ -10,14 +10,6 @@ from sklearn.feature_selection import RFE
 
 
 
-
-display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_setosa.jpg'))
-
-display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_versicolor.jpg'))
-
-display(Image(r'F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\iris_virginica.jpg'))
-
-
 from sklearn.datasets import load_iris
 # this is built in dataset
 
@@ -133,7 +125,7 @@ print(metrics.accuracy_score(expected,predicted))
 names = ['preg','plas','pres','skin','test','mass','pedi','age','class']
 
 import pandas as pd
-df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+df = pd.read_csv(r"\file location\diabetes.csv",header=None)
 
 #df = pd.read_csv(url,names=names)
 df.head()
@@ -327,12 +319,6 @@ def generate_accuracy_and_heatmap(model, x, y):
     return 1
 
 
-import os
-os.chdir('F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\')
-df = pd.read_csv('diabetes_feat_selct.csv')
-df.head()
-
-df.info()
 
 df.Outcome.value_counts()
 
@@ -650,7 +636,7 @@ plt.show()
 # but it is creating new features called as components
 # so it is referred as a dim reduction techniq
 
-df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+
 array = df.values
 X = array[:,0:8] # ivs for train 
 y = array[:,8] # dv
@@ -932,7 +918,7 @@ print('Accuracy: {:.5f}'.format(accuracy_score(y_test,
 
 from sklearn.ensemble import ExtraTreesClassifier
 names = ['preg','plas','pres','skin','test','mass','pedi','age','class']
-df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+df = pd.read_csv(r"file location\diabetes.csv",header=None)
 df.head()
 
 array = df.values
@@ -1100,7 +1086,7 @@ print(kerasencoded)
 # Handle missing vals in keras
 
 import pandas as pd
-dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+dataset = pd.read_csv(r"file location\diabetes.csv",header=None)
 print(dataset.head(15))
 
 
@@ -1191,7 +1177,7 @@ print(result.mean())
 
 #***
 # nxt tchnq lets use mean for imputing
-dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+dataset = pd.read_csv(r"file location\diabetes.csv",header=None)
 dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
 
 dataset.fillna(dataset.mean(),inplace=True)
@@ -1213,7 +1199,7 @@ print(result.mean()) # 76.6%, ntc it has worsened
 
 # nxt tchnq use imputer instd of mean
 #from sklearn.preprocessing import Imputer
-dataset = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+dataset = pd.read_csv("file location\diabetes.csv",header=None)
 dataset[[1,2,3,4,5]] = dataset[[1,2,3,4,5]].replace(0,np.NaN)
 #print(dataset.head(15))
 values = dataset.values
@@ -1357,7 +1343,7 @@ from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_squared_error, r2_score
 #url = "http://mlr.cs.umass.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
 #df = pd.read_csv(url,sep=';')
-df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\Wine-Quality-Dataset.csv")
+df = pd.read_csv(r"file location\Wine-Quality-Dataset.csv")
 df.head()
 
 y = df.quality
@@ -1517,7 +1503,7 @@ plt.show()
 from sklearn import model_selection
 from sklearn.ensemble import BaggingClassifier
 from sklearn.tree import DecisionTreeClassifier
-df = pd.read_csv("F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\pima-indians-diabetes.csv",header=None)
+df = pd.read_csv("file location\diabetes.csv",header=None)
 df.head()
 
 array = df.values
@@ -1999,8 +1985,7 @@ SEED = 42
 names = ['preg','plas','pres','skin','test','mass','pedi','age','Outcome']
 
 import pandas as pd
-url = "F:\\Locker\\Sai\\SaiHCourseNait\\DecBtch\\R_Datasets\\diabetes2.csv"
-df = pd.read_csv(url)
+
 #df = pd.read_csv(url,names=names)
 df.head()
 
